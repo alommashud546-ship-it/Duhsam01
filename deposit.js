@@ -1,52 +1,52 @@
 import { auth, db } from "./firebase.js";
-alert("deposit.js loaded");
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const utr = document.getElementById("utr");
-const amount = document.getElementById("amount");
-const submit = document.getElementById("submit");
 
 let currentUser = null;
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    alert("Please login first");
     window.location.href = "login.html";
     return;
   }
   currentUser = user;
 });
 
-submit.addEventListener("click", async () => {
+document.getElementById("submit").addEventListener("click", async () => {
+
+  const utr = document.getElementById("utr").value;
+  const amount = document.getElementById("amount").value;
+
+  if (utr.length !== 12) {
+    alert("Enter a valid 12-digit UTR");
+    return;
+  }
+
+  if (!amount) {
+    alert("Enter Amount");
+    return;
+  }
+
   try {
-
-    if (utr.value.length !== 12) {
-      alert("Please enter a valid 12-digit UTR.");
-      return;
-    }
-
-    if (amount.value === "") {
-      alert("Please enter amount.");
-      return;
-    }
 
     await addDoc(collection(db, "deposits"), {
       uid: currentUser.uid,
       email: currentUser.email,
-      utr: utr.value,
-      amount: Number(amount.value),
+      utr: utr,
+      amount: Number(amount),
       status: "Pending",
       createdAt: new Date()
     });
 
-    alert("Deposit request submitted!");
+    alert("Deposit Request Submitted!");
 
-    utr.value = "";
-    amount.value = "";
+    document.getElementById("utr").value = "";
+    document.getElementById("amount").value = "";
 
   } catch (e) {
-    alert("Error: " + e.message);
-    console.log(e);
+
+    alert(e.message);
+
   }
+
 });
