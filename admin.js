@@ -50,29 +50,13 @@ async function loadDeposits() {
 
   const userRef = doc(db, "users", data.uid);
 
-  console.log("Deposit UID:", data.uid);
-
-  const userSnap = await getDoc(userRef);
-
-  console.log("User Exists:", userSnap.exists());
-
-  if (userSnap.exists()) {
-    console.log(userSnap.data());
-  }
+  
 
   if (!userSnap.exists()) {
     alert("User not found");
     return;
   }
 
-      const userRef = doc(db, "users", data.uid);
-
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) {
-        alert("User not found");
-        return;
-      }
 
       const balance = Number(userSnap.data().balance || 0);
 
