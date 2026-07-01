@@ -50,7 +50,7 @@ async function loadDeposits() {
 
   const userRef = doc(db, "users", data.uid);
 
-  
+  const userSnap = await getDoc(userRef);
 
   if (!userSnap.exists()) {
     alert("User not found");
