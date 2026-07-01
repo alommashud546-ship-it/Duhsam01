@@ -14,23 +14,21 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "login.html";
     return;
   }
-
   currentUser = user;
 });
 
 submit.addEventListener("click", async () => {
-
-  if (utr.value.length !== 12) {
-    alert("Please enter a valid 12-digit UTR.");
-    return;
-  }
-
-  if (amount.value === "") {
-    alert("Please enter amount.");
-    return;
-  }
-
   try {
+
+    if (utr.value.length !== 12) {
+      alert("Please enter a valid 12-digit UTR.");
+      return;
+    }
+
+    if (amount.value === "") {
+      alert("Please enter amount.");
+      return;
+    }
 
     await addDoc(collection(db, "deposits"), {
       uid: currentUser.uid,
@@ -50,5 +48,4 @@ submit.addEventListener("click", async () => {
     alert("Error: " + e.message);
     console.log(e);
   }
-
 });
