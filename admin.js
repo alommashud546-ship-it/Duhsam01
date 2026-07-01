@@ -3,7 +3,8 @@ import {
   collection,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const requests = document.getElementById("requests");
@@ -30,24 +31,51 @@ async function loadDeposits() {
     const approveBtn = document.createElement("button");
     approveBtn.textContent = "Approve";
 
-    approveBtn.onclick = async () => {
-      await updateDoc(doc(db, "deposits", d.id), {
-        status: "Approved"
-      });
-      alert("Approved");
-      loadDeposits();
-    };
+  approveBtn.onclick = async () => {
+
+  if (data.status === "Approved") {
+    alert("Already Approved");
+    return;
+  }
+
+  const userRef = doc(db, "users", data.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    alert("User not found");
+    return;
+  }
+
+  const balance = userSnap.data().balance || 0;
+
+  await updateDoc(userRef, {
+    balance: balance + Number(data.amount)
+  });
+
+  await updateDoc(doc(db, "deposits", d.id), {
+    status: "Approved"
+  });
+
+  alert("Approved & Wallet Updated");
+
+  loadDeposits();
+
+};
 
     const rejectBtn = document.createElement("button");
     rejectBtn.textContent = "Reject";
 
-    rejectBtn.onclick = async () => {
-      await updateDoc(doc(db, "deposits", d.id), {
-        status: "Rejected"
-      });
-      alert("Rejected");
-      loadDeposits();
-    };
+  rejectBtn.onclick = async () => {
+
+  await updateDoc(doc(db, "deposits", d.id), {
+    status: "Rejected"
+  });
+
+  alert("Rejected");
+
+  loadDeposits();
+
+};
 
     card.appendChild(approveBtn);
     card.appendChild(rejectBtn);
