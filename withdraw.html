@@ -3,25 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Withdraw - Duhsam</title>
+<title>Withdraw</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="box">
-<h1>Withdraw Money</h1>
 
-<input type="number" placeholder="Enter Amount">
+<h1>Withdraw</h1>
+
+<input type="number" id="amount" placeholder="Enter Amount">
+
+<input type="text" id="upi" placeholder="Enter UPI ID">
+
+<button id="withdraw">Submit Withdraw</button>
 
 <br><br>
 
-<button>Withdraw</button>
-
-<br><br>
-
-<a href="wallet.html">⬅ Back</a>
+<a href="dashboard.html">
+<button>Back</button>
+</a>
 
 </div>
+
+<script type="module" src="withdraw.js"></script>
 
 </body>
 </html>
