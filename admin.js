@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 
 import {
   collection,
@@ -9,6 +9,7 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const requests = document.getElementById("requests");
 
@@ -94,4 +95,22 @@ async function loadDeposits() {
 
 }
 
-loadDeposits();
+onAuthStateChanged(auth, async (user) => {
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists() || userSnap.data().role !== "admin") {
+    alert("Access Denied");
+    window.location.href = "dashboard.html";
+    return;
+  }
+
+  loadDeposits();
+
+});
