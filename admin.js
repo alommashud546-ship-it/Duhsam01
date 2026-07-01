@@ -9,7 +9,6 @@ import {
 const requests = document.getElementById("requests");
 
 async function loadDeposits() {
-
   requests.innerHTML = "";
 
   const snapshot = await getDocs(collection(db, "deposits"));
@@ -18,42 +17,45 @@ async function loadDeposits() {
 
     const data = d.data();
 
-    requests.innerHTML += `
-      <div class="box">
-        <p><b>Email:</b> ${data.email}</p>
-        <p><b>Amount:</b> ₹${data.amount}</p>
-        <p><b>UTR:</b> ${data.utr}</p>
-        <p><b>Status:</b> ${data.status}</p>
+    const card = document.createElement("div");
+    card.className = "box";
 
-        <button onclick="approve('${d.id}')">Approve</button>
-        <button onclick="reject('${d.id}')">Reject</button>
-      </div>
+    card.innerHTML = `
+      <p><b>Email:</b> ${data.email || ""}</p>
+      <p><b>Amount:</b> ₹${data.amount || 0}</p>
+      <p><b>UTR:</b> ${data.utr || ""}</p>
+      <p><b>Status:</b> ${data.status || "Pending"}</p>
     `;
+
+    const approveBtn = document.createElement("button");
+    approveBtn.textContent = "Approve";
+
+    approveBtn.onclick = async () => {
+      await updateDoc(doc(db, "deposits", d.id), {
+        status: "Approved"
+      });
+      alert("Approved");
+      loadDeposits();
+    };
+
+    const rejectBtn = document.createElement("button");
+    rejectBtn.textContent = "Reject";
+
+    rejectBtn.onclick = async () => {
+      await updateDoc(doc(db, "deposits", d.id), {
+        status: "Rejected"
+      });
+      alert("Rejected");
+      loadDeposits();
+    };
+
+    card.appendChild(approveBtn);
+    card.appendChild(rejectBtn);
+
+    requests.appendChild(card);
 
   });
 
 }
-
-window.approve = async function(id) {
-
-  await updateDoc(doc(db, "deposits", id), {
-    status: "Approved"
-  });
-
-  alert("Approved");
-  loadDeposits();
-
-};
-
-window.reject = async function(id) {
-
-  await updateDoc(doc(db, "deposits", id), {
-    status: "Rejected"
-  });
-
-  alert("Rejected");
-  loadDeposits();
-
-};
 
 loadDeposits();
