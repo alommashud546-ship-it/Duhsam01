@@ -3,25 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deposit - Duhsam</title>
+<title>Add Money</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="box">
-<h1>Deposit Money</h1>
 
-<input type="number" placeholder="Enter Amount">
+<h1>Add Money</h1>
 
-<br><br>
-
-<button>Deposit</button>
+<img src="./Screenshot_20260527-194307.png" width="220">
 
 <br><br>
 
-<a href="wallet.html">⬅ Back</a>
+<input type="text" id="utr" maxlength="12" placeholder="Enter 12 Digit UTR">
+
+<br><br>
+
+<input type="number" id="amount" placeholder="Enter Amount">
+
+<br><br>
+
+<button id="submit">Submit</button>
+
+<br><br>
+
+<a href="dashboard.html">
+<button>Back</button>
+</a>
 
 </div>
+
+<script type="module" src="deposit.js"></script>
 
 </body>
 </html>
