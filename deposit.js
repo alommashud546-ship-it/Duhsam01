@@ -18,6 +18,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 submit.addEventListener("click", async () => {
+  alert("Submit Clicked");
   if (utr.value.length !== 12) {
     alert("Enter a valid 12-digit UTR");
     return;
