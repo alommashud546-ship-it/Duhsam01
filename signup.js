@@ -1,13 +1,11 @@
 import { auth } from "./firebase.js";
-import {
-  createUserWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const email = document.querySelector('input[type="email"]');
-const password = document.querySelectorAll('input[type="password"]')[0];
-const button = document.querySelector("button");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const signup = document.getElementById("signup");
 
-button.addEventListener("click", async () => {
+signup.addEventListener("click", async () => {
   try {
     await createUserWithEmailAndPassword(
       auth,
@@ -17,7 +15,8 @@ button.addEventListener("click", async () => {
 
     alert("Account Created Successfully!");
     window.location.href = "login.html";
-  } catch (error) {
-    alert(error.message);
+
+  } catch (e) {
+    alert(e.message);
   }
 });
