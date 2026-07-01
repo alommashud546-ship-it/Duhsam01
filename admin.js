@@ -1,15 +1,19 @@
 import { db } from "./firebase.js";
+
 import {
   collection,
   getDocs,
   doc,
   updateDoc,
-  getDoc
+  getDoc,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const requests = document.getElementById("requests");
 
 async function loadDeposits() {
+
   requests.innerHTML = "";
 
   const snapshot = await getDocs(collection(db, "deposits"));
@@ -19,18 +23,24 @@ async function loadDeposits() {
     const data = d.data();
 
     const card = document.createElement("div");
+
     card.className = "box";
 
     card.innerHTML = `
-      <p><b>Email:</b> ${data.email || ""}</p>
-      <p><b>Amount:</b> ₹${data.amount || 0}</p>
-      <p><b>UTR:</b> ${data.utr || ""}</p>
-      <p><b>Status:</b> ${data.status || "Pending"}</p>
+      <h3>${data.email}</h3>
+
+      <p>Amount : ₹${data.amount}</p>
+
+      <p>UTR : ${data.utr}</p>
+
+      <p>Status : ${data.status}</p>
     `;
 
     const approveBtn = document.createElement("button");
     approveBtn.textContent = "Approve";
 
+    const rejectBtn = document.createElement("button");
+    rejectBtn.textContent = "Reject";
   approveBtn.onclick = async () => {
 
   if (data.status === "Approved") {
@@ -39,49 +49,63 @@ async function loadDeposits() {
   }
 
   const userRef = doc(db, "users", data.uid);
+
+  console.log("Deposit UID:", data.uid);
+
   const userSnap = await getDoc(userRef);
+
+  console.log("User Exists:", userSnap.exists());
+
+  if (userSnap.exists()) {
+    console.log(userSnap.data());
+  }
 
   if (!userSnap.exists()) {
     alert("User not found");
     return;
   }
 
-  const balance = userSnap.data().balance || 0;
+      const userRef = doc(db, "users", data.uid);
 
-  await updateDoc(userRef, {
-    balance: balance + Number(data.amount)
-  });
+      const userSnap = await getDoc(userRef);
 
-  await updateDoc(doc(db, "deposits", d.id), {
-    status: "Approved"
-  });
+      if (!userSnap.exists()) {
+        alert("User not found");
+        return;
+      }
 
-  alert("Approved & Wallet Updated");
+      const balance = Number(userSnap.data().balance || 0);
 
-  loadDeposits();
+      await updateDoc(userRef, {
+        balance: balance + Number(data.amount)
+      });
 
-};
+      await updateDoc(doc(db, "deposits", d.id), {
+        status: "Approved"
+      });
 
-    const rejectBtn = document.createElement("button");
-    rejectBtn.textContent = "Reject";
+      alert("Approved Successfully");
 
-  rejectBtn.onclick = async () => {
+      loadDeposits();
 
-  await updateDoc(doc(db, "deposits", d.id), {
-    status: "Rejected"
-  });
+    };
 
-  alert("Rejected");
+    rejectBtn.onclick = async () => {
 
-  loadDeposits();
+      await updateDoc(doc(db, "deposits", d.id), {
+        status: "Rejected"
+      });
 
-};
+      alert("Rejected");
+
+      loadDeposits();
+
+    };
 
     card.appendChild(approveBtn);
     card.appendChild(rejectBtn);
 
     requests.appendChild(card);
-
   });
 
 }
