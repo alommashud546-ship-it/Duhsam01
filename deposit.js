@@ -46,9 +46,9 @@ submit.addEventListener("click", async () => {
     utr.value = "";
     amount.value = "";
 
-catch (e) {
-  alert("Error: " + e.message);
-  console.log(e);
-}
+  } catch (e) {
+    alert("Error: " + e.message);
+    console.log(e);
+  }
 
 });
